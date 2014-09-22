@@ -92,33 +92,32 @@ char * my_strstr(const char * haystack, const char * needle)
     //LOCAL DECLARATIONS
     int needleLength = my_strlen(needle);
     char *result = NULL;
-    int end = 0;
     int haystackCnt = 0;
     int needleCnt = 0;
   
     //EXECUTABLE STATEMENTS
-    while(!end && haystack[haystackCnt] != '\0')
+    if(needle[0] == '\0')
     {
-        if(needleCnt < needleLength)
-	{
+	result = (char *) &haystack[0];
+    }
+    else
+    {
+        while(needleCnt < needleLength && haystack[haystackCnt] != '\0')
+        {
 	    if(haystack[haystackCnt] == needle[needleCnt])
 	    {
-		needleCnt++;
+	        needleCnt++;
 	    }
 	    else
 	    {
-		needleCnt = 0;
+	        needleCnt = 0;
 	    }
-	}
-	else
-	{
-	    end = 1;
-	}
-	haystackCnt++;
-    }
-    if(needleCnt == needleLength)
-    {
-	result = (char *) &haystack[haystackCnt - (needleCnt + 1)];
+	    haystackCnt++;
+        }
+        if(needleCnt == needleLength)
+        {
+	    result = (char *) &haystack[haystackCnt - needleCnt];
+        }
     }
 
     return result;
@@ -156,7 +155,7 @@ char * my_strcat(char * dest, const char * src)
     return dest;
 }
 
-int my_isspace(char ch)
+int my_isspace(int ch)
 {
     //LOCAL DECLARATIONS
     int result = 0;    
@@ -164,13 +163,40 @@ int my_isspace(char ch)
     //EXECUTABLE STATEMENTS
     switch(ch)
     {
-	case ' ': 	
-	case '\f':	
-	case '\n':
-	case '\r':
-	case '\t':
-	case '\v':	result = 1; break;
+	case 9 ... 13:	
+	case 32:	result = 1; break;
     }
 
     return result;
+}
+
+int my_atoi(const char * str)
+{
+   //LOCAL DECLARATIONS
+   int neg = 0;
+   int count = 0;
+   int end = 0;   
+   int numRes = 0;
+
+   //EXECUTABLE STATEMENTS
+   while(my_isspace(str[count]))
+   {
+	count++;
+   }
+   while(!end)
+   {
+	switch(str[count])
+	{
+	    case '-':		neg = !neg;				break;
+	    case 48 ... 57: 	numRes = numRes * 10 + str[count] - 48;	break;
+	    default: end = 1;
+	}
+	count++;
+   }
+   if(neg)
+   {
+	numRes *= -1;
+   }
+   
+   return numRes;
 }
