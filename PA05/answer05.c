@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "answer05.h"
 
+#define TRUE  1
+#define FALSE 0
+
 void intitiateArray(int *result, int initialNum, int size);
 void partition(int *result, int length);
 void printResult(int *arr, int len);
@@ -11,7 +14,118 @@ void spread(int *loc, int remainder, int prev, int *length);
 void partInc(int *result, int size);
 void printArrayBack(int *arr, int len);
 void printResultBack(int *arr, int len);
-void partOdd(int *loc, int rem);
+void partOdd(int *result, int remainder, int loc);
+void partEven(int *result, int remainder, int loc);
+void oddPart(int *result, int remainder, int loc);
+void evenPart(int *result, int remainder, int loc);
+int isPrime(int num);
+void partPrim(int *result, int remainder, int loc);
+
+void partitionPrime(int value)
+{
+    if(value > 1)
+    {
+        int *result = malloc(sizeof(int) * (value/ 2));
+      	partPrim(result, value, 0);
+    	free(result);
+    }
+}
+
+int isPrime(int n)
+{
+    if(n <= 3)
+    {
+	return n > 1;
+    }
+    else if(n % 2 == 0 || n % 3 == 0)
+    {
+	return FALSE;
+    }
+    else
+    {
+	int i;
+	for(i = 5; (i-1)*(i-1) < n; i += 6)
+	{
+	    if(n % i == 0 || n % (i + 2) == 0)
+	    {
+		return FALSE;
+     	    }
+	}
+	return TRUE;
+    }
+}
+
+void partitionOddAndEven(int value)
+{
+    int i;
+    int remainder;
+    int odd = 0;
+    int *result = malloc(sizeof(int) * value);
+    for(i = 1; i <= value; i++)
+    {
+	*result = i;
+	remainder = value - i;
+	odd = !odd;
+	if(remainder != 0)
+	{
+	    if(odd)
+	    {
+		evenPart(result, remainder, 1);
+	    }
+	    else
+	    {
+		oddPart(result, remainder, 1);
+	    }
+	}
+    }
+    printf("= %d\n", *result);
+    free(result);
+}
+
+void oddPart(int *result, int remainder, int loc)
+{
+    int i;
+    int rem;
+    for(i = 1; i <= remainder; i+=2)
+    {
+	result[loc] = i;
+	rem = remainder - i;
+	if(rem != 0)
+	{
+	    rem != 1 ? evenPart(result, rem, loc + 1): 0;
+	}
+	else
+	{
+	    printResult(result, loc + 1);
+	}
+    }
+}
+
+void evenPart(int *result, int remainder, int loc)
+{
+    int i;
+    int rem;
+    for(i = 2; i <= remainder; i+=2)
+    {
+	result[loc] = i;
+	rem = remainder - i;
+	if(rem != 0)
+	{
+	    rem != 2 ? oddPart(result, rem, loc + 1): 0;
+	}
+	else
+	{
+	    printResult(result, loc+1);
+	}
+    } 
+}
+
+void partitionEven(int value)
+{
+    int *result = malloc(sizeof(int) * value);
+    partEven(result, value, 0);
+    free(result);
+}
 
 void partitionAll(int value)
 {
@@ -24,67 +138,75 @@ void partitionAll(int value)
 
 void partitionOdd(int value)
 {
-    if(value % 2 != 1)
-    {
-	return;
-    }
     int *result = malloc(sizeof(int) * value);
-    //int length = 0;
-    initiateArray(result, 1, value);
-    printResult(result, value);
-    partOdd(result, value);
+    partOdd(result, value, 0);
+    result[0] = 1;
     free(result);
 }
 
-void partOdd(int *result, int value)
+void partOdd(int *result, int remainder, int loc)
 {
-    int len = value - 1;
     int i;
-    while(len > 0)
+    int rem;
+    for(i = 1; i <= remainder; i+=2)
     {
-	if(result[len] == 1)
-  	{
-	    (result[len - 2])+= 2;
-	    (result[len])--;
-	    (result[len - 1])--;
-	    for(i = result[len - 1]; i > 0; i--)
-            {
-                result[len - 1] = 1;
-                len++;
-            }
-	    len -= 2;
+	result[loc] = i;
+	rem = remainder - i;
+	rem != 0 ? partOdd(result, rem, loc + 1) : printResult(result, loc + 1);
+    }
+}
+
+void partPrim(int *result, int remainder, int loc)
+{
+    int i;
+    int rem;
+    result[loc] = 2;
+    rem = remainder - 2;
+    if(rem > 1)
+    {
+	partPrim(result, rem, loc + 1);
+    }
+    else
+    {
+	result[loc] += rem;
+        if(isPrime(result[loc]))
+        {
+            printResult(result, loc + 1);
 	}
-	else
+        return;
+    }
+    for(i = 3; i <= remainder; i+=2)
+    {
+	if(isPrime(i))
 	{
-	    (result[len-1])+=2;
-	    (result[len]) -= 2;
-            for(i = result[len]; i > 0; i--)
+	    result[loc] = i;
+	    rem = remainder - i;
+	    if(rem > 1)
 	    {
-		result[len] = 1;
-	    	len++;
+		partPrim(result, rem, loc + 1);
 	    }
-	    len--;
-	}
-	printResult(result, len + 1);
-    }
-    /*int i;
-    int oRem = rem;
-    (*length)++;
-    for(i = 1; i <= oRem; i+=2)
-    {
-	*loc = i;
-	rem--;
-	if(rem > 0)
-	{
-	    partOdd(loc+1, rem, length);
+	    else
+	    {
+		result[loc] += rem;
+		if(isPrime(result[loc]))
+	      	{
+		    printResult(result, loc + 1);
+		}
+	    }
 	}
     }
-    for(i = 1; i <= *length - 1; i++)
+}
+
+void partEven(int *result, int remainder, int loc)
+{
+    int i;
+    int rem;
+    for(i = 2; i <= remainder; i+=2)
     {
-	printf("%d, ", loc[i - *length]);
+	result[loc] = i;
+	rem = remainder - i;
+	rem != 0? partEven(result, rem, loc + 1) : printResult(result, loc + 1);
     }
-    printf("%d\n", loc[i - *length]);
-    (*length)--;*/
 }
 
 void partition(int *result, int length)
@@ -133,7 +255,7 @@ void printArrayBack(int *arr, int len)
     {
 	for(i = len - 1; i > 0; i--)
 	{
-	    printf("%d, ", arr[i]);
+	    printf("%d + ", arr[i]);
 	}
 	printf("%d", arr[i]);
     }
@@ -147,7 +269,7 @@ void printArray(int *arr, int len)
     {
 	for(i = 0; i < len - 1; i++)
 	{
-	    printf("%d, ", arr[i]);
+	    printf("%d + ", arr[i]);
 	}
 	printf("%d", arr[len - 1]);
     }
