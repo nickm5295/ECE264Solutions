@@ -240,6 +240,7 @@ Image * Image_load(const char *filename)
 	    {
 	     	fprintf(stderr, "Invalid comment size in '%s'\n", filename);
 	    	err = TRUE;
+		tmp_im->data = NULL;
 	    }
 	    else if(comment[header.comment_len - 1] == '\0')
 	    {
@@ -249,6 +250,7 @@ Image * Image_load(const char *filename)
 	    {
 	    	fprintf(stderr, "Invalid comment in '%s'\n", filename);
 	    	err = TRUE;
+		tmp_im->data = NULL;
 	    }
 	    free(comment);
 	}
