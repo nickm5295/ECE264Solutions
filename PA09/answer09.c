@@ -264,7 +264,15 @@ BusinessNode * tree_insert(BusinessNode * node, BusinessNode * root)
 	return node;
     }
     int res = strcmp(node->name, root->name);
-    if(res < 0)
+    if(res <= 0)
+    {
+        insertLeft(node, root);
+    }
+    else
+    {
+        insertRight(node, root);
+    }
+    /*if(res < 0)
     {
 	insertLeft(node, root);
     }
@@ -299,7 +307,7 @@ BusinessNode * tree_insert(BusinessNode * node, BusinessNode * root)
 		insertRight(node, root);
 	    }
 	}
-    }
+    }*/
     return root;
 }
 
