@@ -20,3 +20,12 @@ void HuffNode_destroy(HuffNode * tree)
     HuffNode_destroy(tree->right);
     free(tree);
 }
+
+Stack * Stack_create()
+{
+    Stack * st = malloc(sizeof(Stack));
+    st->head = NULL;
+    return st;
+}
+
+
