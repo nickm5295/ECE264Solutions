@@ -4,6 +4,9 @@
 
 #include "answer11.h"
 
+#define TRUE 1
+#define FALSE 0
+
 void freeSNode(StackNode * sNode);
 
 HuffNode * HuffNode_create(int value)
@@ -47,4 +50,13 @@ void freeSNode(StackNode * sNode)
 	HuffNode_destroy(p->tree);
 	free(p);
     } 
+}
+
+int Stack_isEmpty(Stack * stack)
+{
+    if(stack != NULL && stack->head != NULL && (stack->head)->tree != NULL)
+    {
+	return FALSE;
+    }
+    return TRUE;
 }
