@@ -4,6 +4,8 @@
 
 #include "answer11.h"
 
+void freeSNode(StackNode * sNode);
+
 HuffNode * HuffNode_create(int value)
 {
     HuffNode * huff = malloc(sizeof(HuffNode));
@@ -28,4 +30,21 @@ Stack * Stack_create()
     return st;
 }
 
+void Stack_destroy(Stack * stack)
+{
+    if(stack == NULL) return;
+    freeSNode(stack->head);
+    free(stack);
+}
 
+void freeSNode(StackNode * sNode)
+{
+    StackNode * p = NULL;
+    while(sNode!= NULL)
+    {
+	p = sNode;
+	sNode = sNode->next;
+	HuffNode_destroy(p->tree);
+	free(p);
+    } 
+}
