@@ -60,3 +60,18 @@ int Stack_isEmpty(Stack * stack)
     }
     return TRUE;
 }
+
+HuffNode * Stack_popFront(Stack * stack)
+{
+    HuffNode * res = (stack->head)->tree;
+    stack->head = (stack->head)->next;
+    return res;
+}
+
+void Stack_pushFront(Stack * stack, HuffNode * tree)
+{
+    StackNode * newStack = malloc(sizeof(StackNode));
+    newStack->tree = tree;
+    newStack->next = stack->head;
+    stack->head = newStack;
+}
